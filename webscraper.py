@@ -4,6 +4,26 @@
 import requests
 from BeautifulSoup import BeautifulSoup
 
+def getArticles (mainURL):
+	response = requests.get(mainURL)
+	html = response.content
+	soup = BeautifulSoup(html)
+	links = []
+	for item in soup.findAll('div', attrs={'class': 'views-field views-field-title'}):
+		tag = item.find('a')
+		links.append("https://www.whitehouse.gov" + tag['href'])
+	return links
+
+def processArticle (url):
+	response = requests.get(url)
+	html = response.content
+	soup = BeautifulSoup(html)
+	article = soup.find('div', attrs={'class': 'field-item even'})
+
+	for paragragh in article.findAll('p'):
+		newPar = replaceWords(paragragh)
+		print '<p>' + newPar + '</p>' + '<br>'
+
 def replaceWords (sample):
 	newSample = sample.text.replace(' good ', ' bad ')
 	newSample = newSample.replace('&nbsp;', ' ')
@@ -32,15 +52,15 @@ def replaceWords (sample):
 	newSample = newSample.replace('governor', 'Demon-Overseer')
 	newSample = newSample.replace('Senator', 'Elf-Lord')
 	newSample = newSample.replace('senator', 'Elf-Lord')
+	newSample = newSample.replace('the media', 'the Rebel Alliance')
+	newSample = newSample.replace('President', 'Supreme Leader')
 
 	return newSample
 
-url = "https://www.whitehouse.gov/the-press-office/2017/02/17/remarks-president-trump-unveiling-boeing-787-dreamliner-aircraft"
-response = requests.get(url)
-html = response.content
-soup = BeautifulSoup(html)
-article = soup.find('div', attrs={'class': 'field-item even'})
+mainURL = "https://www.whitehouse.gov/briefing-room/speeches-and-remarks"
+articleLinks = getArticles (mainURL)
+for url in articleLinks:
+	print url
 
-for paragragh in article.findAll('p'):
-	newPar = replaceWords(paragragh)
-	print '<p>' + newPar + '</p>' + '<br>'
+
+
