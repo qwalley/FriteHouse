@@ -1,1 +1,2 @@
-nothing to see here, yet.
+Can scrape specific white house articles, and perform word substitution. the subtitution also restores ao HTML tags.
+Next steps are to scrape the URLs for articles from the home page, and write output to HTML files.
